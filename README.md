@@ -1,21 +1,10 @@
-# NekúpHlúposť 0.4.2
+# NekúpHlúposť 0.5
 
-Webová aplikácia FastAPI. Odkazy na Bazoš načítava server; portál môže prístup obmedziť.
-
-## Spustenie lokálne
-
-```bash
-pip install -r requirements.txt
-uvicorn app:app --host 0.0.0.0 --port 8000
-```
-
-Otvoriť http://localhost:8000 (nie HTML súbor samostatne).
+FastAPI prototyp. Pridané textové upozornenia na predvádzací kus, chýbajúce doklady, poškodenie, platbu vopred a blokovanie. Upozornenia nie sú overením pravdivosti ani hodnotením predávajúceho.
 
 ## Render
+Build: `pip install -r requirements.txt`
+Start: `uvicorn app:app --host 0.0.0.0 --port $PORT`
 
-1. V GitHube vytvor nový repozitár a nahraj súbory z koreňa tohto ZIP (app.py, static/, requirements.txt, render.yaml).
-2. Na https://dashboard.render.com zvoľ New > Blueprint a prepoj repozitár.
-3. Skontroluj plán Free a potvrď vytvorenie služby.
-4. Po nasadení otvor pridelenú HTTPS adresu a otestuj URL inzerátu.
-
-Živé načítanie Bazoša nie je garantované. Ak ho Bazoš zablokuje, funguje ručné vloženie textu.
+## Aktualizácia existujúceho GitHub repozitára
+Nahraj obsah tohto ZIP (nie samotný ZIP) do koreňa repozitára; zachovaj `static/index.html` v priečinku `static`. GitHub commit spustí automatický deploy, ak je na Renderi nastavený Auto Deploy.

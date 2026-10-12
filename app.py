@@ -1,4 +1,4 @@
-"""NekúpHlúposť 0.4 — server-side Bazoš listing inspection."""
+"""NekúpHlúposť 0.5 — server-side Bazoš listing inspection."""
 import ipaddress
 import re
 import socket
@@ -85,7 +85,21 @@ def analyze(title, description, price=''):
         notes.append('Uvádzanú záruku si over podľa nákupného dokladu a podmienok predajcu.')
     if price:
         notes.append('Uvedená cena nebola porovnaná s aktuálnymi ponukami na trhu.')
-    return {'checks':checks,'matched':sum(x['found'] for x in checks),'total':len(checks),'notes':notes,'questions':questions,'disclaimer':'Ide o kontrolu tvrdení v inzeráte, nie o potvrdenie pravdivosti, bezpečnosti predaja alebo výhodnosti ceny.'}
+    warnings = []
+    if has(r'vystaven',r'predvadzac',r'demo kus'):
+        warnings.append('Predvádzací alebo vystavený kus: over skutočné opotrebenie a záruku.')
+    if has(r'bez zaruky',r'bez doklad',r'bez faktur'):
+        warnings.append('Inzerát naznačuje chýbajúci doklad alebo záruku.')
+    if has(r'prasknut',r'nefunkcn',r'pokazen',r'na diely'):
+        warnings.append('Spomína sa poškodenie alebo nefunkčnosť; prever náklady na opravu.')
+    if has(r'platba vopred',r'zaloha vopred'):
+        warnings.append('Predávajúci požaduje platbu alebo zálohu vopred.')
+    if has(r'blokovan',r'icloud lock',r'google lock'):
+        warnings.append('Spomína sa blokovanie zariadenia alebo účtu.')
+    # These are textual signals, not proof of fraud or a verified product condition.
+    risk_summary = ('Zistené konkrétne upozornenia' if warnings else
+                    'Bez zachyteného špecifického upozornenia — bezpečnosť nie je overená')
+    return {'risk_summary':risk_summary,'warnings':warnings,'price_assessment':'Bez trhového porovnania' if price else 'Cena nebola uvedená','photo_assessment':'Fotografie sa neoverujú automaticky; môžu byť ilustračné alebo upravené.','checks':checks,'matched':sum(x['found'] for x in checks),'total':len(checks),'notes':notes,'questions':questions,'disclaimer':'Ide o kontrolu tvrdení v inzeráte, nie o potvrdenie pravdivosti, bezpečnosti predaja alebo výhodnosti ceny.'}
 
 
 @app.get('/')
